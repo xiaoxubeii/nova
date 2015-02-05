@@ -14,7 +14,7 @@
 
 import pbr.version
 
-from nova.i18n import _LE
+from dalek.i18n import _LE
 
 NOVA_VENDOR = "OpenStack Foundation"
 NOVA_PRODUCT = "OpenStack Nova"
@@ -33,7 +33,7 @@ def _load_config():
 
     from oslo.config import cfg
 
-    from nova.openstack.common import log as logging
+    from dalek.openstack.common import log as logging
 
     global loaded, NOVA_VENDOR, NOVA_PRODUCT, NOVA_PACKAGE
     if loaded:

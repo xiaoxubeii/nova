@@ -34,9 +34,9 @@ import routes.middleware
 import webob.dec
 import webob.exc
 
-from nova import exception
-from nova.i18n import _, _LE, _LI
-from nova.openstack.common import log as logging
+from dalek import exception
+from dalek.i18n import _, _LE, _LI
+from dalek.openstack.common import log as logging
 
 wsgi_opts = [
     cfg.StrOpt('api_paste_config',

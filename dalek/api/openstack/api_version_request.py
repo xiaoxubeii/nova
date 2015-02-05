@@ -14,7 +14,7 @@
 
 import re
 
-from nova import exception
+from dalek import exception
 
 # Define the minimum and maximum version of the API across all of the
 # REST API. The format of the version is:

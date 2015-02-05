@@ -18,8 +18,8 @@ import urllib2
 
 import paste.urlmap
 
-from nova.api.openstack import wsgi
-from nova.openstack.common import log as logging
+from dalek.api.openstack import wsgi
+from dalek.openstack.common import log as logging
 
 
 LOG = logging.getLogger(__name__)

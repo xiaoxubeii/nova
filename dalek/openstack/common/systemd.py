@@ -20,7 +20,7 @@ import os
 import socket
 import sys
 
-from nova.openstack.common import log as logging
+from dalek.openstack.common import log as logging
 
 
 LOG = logging.getLogger(__name__)

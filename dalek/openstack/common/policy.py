@@ -100,9 +100,9 @@ import six
 import six.moves.urllib.parse as urlparse
 import six.moves.urllib.request as urlrequest
 
-from nova.openstack.common import fileutils
-from nova.openstack.common._i18n import _, _LE, _LI
-from nova.openstack.common import log as logging
+from dalek.openstack.common import fileutils
+from dalek.openstack.common._i18n import _, _LE, _LI
+from dalek.openstack.common import log as logging
 
 
 policy_opts = [

@@ -2,7 +2,7 @@
 # Copyright 2011 OpenStack Foundation
 # All Rights Reserved.
 #
-#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
 #    a copy of the License at
 #
@@ -24,27 +24,25 @@ from oslo.utils import strutils
 import six
 import webob
 
-from nova.api.openstack import api_version_request as api_version
-from nova.api.openstack import versioned_method
-from nova import exception
-from nova import i18n
-from nova.i18n import _
-from nova.i18n import _LE
-from nova.i18n import _LI
-from nova.openstack.common import log as logging
-from nova import utils
-from nova import wsgi
+from dalek.api.openstack import api_version_request as api_version
+from dalek.api.openstack import versioned_method
+from dalek import exception
+from dalek import i18n
+from dalek.i18n import _
+from dalek.i18n import _LE
+from dalek.i18n import _LI
+from dalek.openstack.common import log as logging
+from dalek import utils
+from dalek import wsgi
 
 
 LOG = logging.getLogger(__name__)
 
 _SUPPORTED_CONTENT_TYPES = (
     'application/json',
-    'application/vnd.openstack.compute+json',
 )
 
 _MEDIA_TYPE_MAP = {
-    'application/vnd.openstack.compute+json': 'json',
     'application/json': 'json',
 }
 
@@ -72,7 +70,7 @@ VER_METHOD_ATTR = 'versioned_methods'
 
 # Name of header used by clients to request a specific version
 # of the REST API
-API_VERSION_REQUEST_HEADER = 'X-OpenStack-Compute-API-Version'
+API_VERSION_REQUEST_HEADER = 'X-Adaptor-API-Version'
 
 
 def get_supported_content_types():
@@ -84,8 +82,6 @@ def get_media_map():
 
 
 class Request(webob.Request):
-    """Add some OpenStack API-specific logic to the base webob.Request."""
-
     def __init__(self, *args, **kwargs):
         super(Request, self).__init__(*args, **kwargs)
         self._extension_data = {'db_items': {}}
@@ -209,7 +205,7 @@ class Request(webob.Request):
         if not self.accept_language:
             return None
         return self.accept_language.best_match(
-                i18n.get_available_languages())
+            i18n.get_available_languages())
 
     def set_api_version_request(self):
         """Set API version request based on the request header information."""
@@ -262,7 +258,6 @@ class TextDeserializer(ActionDispatcher):
 
 
 class JSONDeserializer(TextDeserializer):
-
     def _from_json(self, datastring):
         try:
             return jsonutils.loads(datastring)
@@ -304,6 +299,7 @@ def serializers(**serializers):
             func.wsgi_serializers = {}
         func.wsgi_serializers.update(serializers)
         return func
+
     return decorator
 
 
@@ -320,6 +316,7 @@ def deserializers(**deserializers):
             func.wsgi_deserializers = {}
         func.wsgi_deserializers.update(deserializers)
         return func
+
     return decorator
 
 
@@ -334,6 +331,7 @@ def response(code):
     def decorator(func):
         func.wsgi_code = code
         return func
+
     return decorator
 
 
@@ -506,11 +504,11 @@ class ResourceExceptionHandler(object):
 
         if isinstance(ex_value, exception.Forbidden):
             raise Fault(webob.exc.HTTPForbidden(
-                    explanation=ex_value.format_message()))
+                explanation=ex_value.format_message()))
         elif isinstance(ex_value, exception.Invalid):
             raise Fault(exception.ConvertedException(
-                    code=ex_value.code,
-                    explanation=ex_value.format_message()))
+                code=ex_value.code,
+                explanation=ex_value.format_message()))
         elif isinstance(ex_value, TypeError):
             exc_info = (ex_type, ex_value, ex_traceback)
             LOG.error(_LE('Exception handling resource: %s'), ex_value,
@@ -650,7 +648,7 @@ class Resource(wsgi.Application):
             raise exception.InvalidContentType(content_type=content_type)
 
         if (hasattr(deserializer, 'want_controller')
-                and deserializer.want_controller):
+            and deserializer.want_controller):
             return deserializer(self.controller).deserialize(body)
         else:
             return deserializer().deserialize(body)
@@ -746,7 +744,7 @@ class Resource(wsgi.Application):
         #            run into troubles due to the @webob.dec.wsgify()
         #            decorator.
         return self._process_stack(request, action, action_args,
-                               content_type, body, accept)
+                                   content_type, body, accept)
 
     def _process_stack(self, request, action, action_args,
                        content_type, body, accept):
@@ -796,13 +794,8 @@ class Resource(wsgi.Application):
 
         project_id = action_args.pop("project_id", None)
         context = request.environ.get('nova.context')
-        if (context and project_id and (project_id != context.project_id)):
-            msg = _("Malformed request URL: URL's project_id '%(project_id)s'"
-                    " doesn't match Context's project_id"
-                    " '%(context_project_id)s'") % \
-                    {'project_id': project_id,
-                     'context_project_id': context.project_id}
-            return Fault(webob.exc.HTTPBadRequest(explanation=msg))
+        context.project_id = project_id
+
 
         # Run pre-processing extensions
         response, post = self.pre_process_extensions(extensions,
@@ -880,7 +873,7 @@ class Resource(wsgi.Application):
                 meth = getattr(self.controller, action)
         except AttributeError:
             if (not self.wsgi_actions or
-                    action not in _ROUTES_METHODS + ['action']):
+                        action not in _ROUTES_METHODS + ['action']):
                 # Propagate the error
                 raise
         else:
@@ -925,6 +918,7 @@ def action(name):
     def decorator(func):
         func.wsgi_action = name
         return func
+
     return decorator
 
 
@@ -1057,7 +1051,7 @@ class Controller(object):
             return object.__getattribute__(self, key)
 
         if version_meth_dict and \
-          key in object.__getattribute__(self, VER_METHOD_ATTR):
+                        key in object.__getattribute__(self, VER_METHOD_ATTR):
             return version_select
 
         return object.__getattribute__(self, key)
@@ -1127,17 +1121,17 @@ class Fault(webob.exc.HTTPException):
     """Wrap webob.exc.HTTPException to provide API friendly response."""
 
     _fault_names = {
-            400: "badRequest",
-            401: "unauthorized",
-            403: "forbidden",
-            404: "itemNotFound",
-            405: "badMethod",
-            409: "conflictingRequest",
-            413: "overLimit",
-            415: "badMediaType",
-            429: "overLimit",
-            501: "notImplemented",
-            503: "serviceUnavailable"}
+        400: "badRequest",
+        401: "unauthorized",
+        403: "forbidden",
+        404: "itemNotFound",
+        405: "badMethod",
+        409: "conflictingRequest",
+        413: "overLimit",
+        415: "badMediaType",
+        429: "overLimit",
+        501: "notImplemented",
+        503: "serviceUnavailable"}
 
     def __init__(self, exception):
         """Create a Fault for the given webob.exc.exception."""
@@ -1172,7 +1166,7 @@ class Fault(webob.exc.HTTPException):
             self.wrapped_exc.headers[API_VERSION_REQUEST_HEADER] = \
                 req.api_version_request.get_string()
             self.wrapped_exc.headers['Vary'] = \
-              API_VERSION_REQUEST_HEADER
+                API_VERSION_REQUEST_HEADER
 
         content_type = req.best_match_content_type()
         serializer = {

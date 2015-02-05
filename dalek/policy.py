@@ -15,8 +15,8 @@
 
 """Policy Engine For Nova."""
 
-from nova import exception
-from nova.openstack.common import policy
+from dalek import exception
+from dalek.openstack.common import policy
 
 
 _ENFORCER = None

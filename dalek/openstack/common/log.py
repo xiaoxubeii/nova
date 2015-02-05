@@ -46,8 +46,8 @@ from six import moves
 
 _PY26 = sys.version_info[0:2] == (2, 6)
 
-from nova.openstack.common._i18n import _
-from nova.openstack.common import local
+from dalek.openstack.common._i18n import _
+from dalek.openstack.common import local
 
 
 _DEFAULT_LOG_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"

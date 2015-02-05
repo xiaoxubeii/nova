@@ -18,11 +18,10 @@
 from oslo.config import cfg
 from oslo.db import options
 
-from nova import debugger
-from nova.openstack.common import log
-from nova import paths
-from nova import rpc
-from nova import version
+from dalek import debugger
+from dalek.openstack.common import log
+from dalek import paths
+from dalek import version
 
 
 CONF = cfg.CONF
@@ -45,12 +44,7 @@ _DEFAULT_LOGGING_CONTEXT_FORMAT = ('%(asctime)s.%(msecs)03d %(process)d '
 
 def parse_args(argv, default_config_files=None):
     log.set_defaults(_DEFAULT_LOGGING_CONTEXT_FORMAT, _DEFAULT_LOG_LEVELS)
-    options.set_defaults(CONF, connection=_DEFAULT_SQL_CONNECTION,
-                         sqlite_db='nova.sqlite')
-    rpc.set_defaults(control_exchange='nova')
     debugger.register_cli_opts()
     CONF(argv[1:],
-         project='nova',
-         version=version.version_string(),
+         project='adaptor',
          default_config_files=default_config_files)
-    rpc.init(CONF)

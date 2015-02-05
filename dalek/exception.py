@@ -29,9 +29,9 @@ from oslo.config import cfg
 from oslo.utils import excutils
 import webob.exc
 
-from nova.i18n import _, _LE
-from nova.openstack.common import log as logging
-from nova import safe_utils
+from dalek.i18n import _, _LE
+from dalek.openstack.common import log as logging
+from dalek import safe_utils
 
 LOG = logging.getLogger(__name__)
 

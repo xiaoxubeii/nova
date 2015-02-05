@@ -3,17 +3,17 @@
 # Administrator of the National Aeronautics and Space Administration.
 # All Rights Reserved.
 #
-#    Licensed under the Apache License, Version 2.0 (the "License"); you may
-#    not use this file except in compliance with the License. You may obtain
-#    a copy of the License at
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
 #
-#         http://www.apache.org/licenses/LICENSE-2.0
+# http://www.apache.org/licenses/LICENSE-2.0
 #
-#    Unless required by applicable law or agreed to in writing, software
-#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-#    License for the specific language governing permissions and limitations
-#    under the License.
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
 
 """RequestContext: context for requests that persist through all of nova."""
 
@@ -24,12 +24,12 @@ from keystoneclient import service_catalog
 from oslo.utils import timeutils
 import six
 
-from nova import exception
-from nova.openstack.common import context
-from nova.i18n import _, _LW
-from nova.openstack.common import local
-from nova.openstack.common import log as logging
-from nova import policy
+from dalek import exception
+from dalek.openstack.common import context
+from dalek.i18n import _, _LW
+from dalek.openstack.common import local
+from dalek.openstack.common import log as logging
+from dalek import policy
 
 
 LOG = logging.getLogger(__name__)
@@ -68,12 +68,9 @@ class RequestContext(object):
 
     """
 
-    def __init__(self, user_id, project_id, is_admin=None, read_deleted="no",
-                 roles=None, remote_address=None, timestamp=None,
-                 request_id=None, auth_token=None, overwrite=True,
-                 quota_class=None, user_name=None, project_name=None,
-                 service_catalog=None, instance_lock_checked=False,
-                 user_auth_plugin=None, **kwargs):
+    def __init__(self, user_id, user_name, user_password, project_id=None, is_admin=None, read_deleted="no",
+                 remote_address=None, timestamp=None, request_id=None,
+                 overwrite=True, project_name=None, **kwargs):
         """:param read_deleted: 'no' indicates deleted records are hidden,
                 'yes' indicates deleted records are visible,
                 'only' indicates that *only* deleted records are visible.
@@ -93,9 +90,9 @@ class RequestContext(object):
 
         self.user_id = user_id
         self.project_id = project_id
-        self.roles = roles or []
         self.read_deleted = read_deleted
         self.remote_address = remote_address
+        self.user_password = user_password
         if not timestamp:
             timestamp = timeutils.utcnow()
         if isinstance(timestamp, six.string_types):
@@ -104,28 +101,9 @@ class RequestContext(object):
         if not request_id:
             request_id = context.generate_request_id()
         self.request_id = request_id
-        self.auth_token = auth_token
-
-        if service_catalog:
-            # Only include required parts of service_catalog
-            self.service_catalog = [s for s in service_catalog
-                if s.get('type') in ('volume', 'volumev2')]
-        else:
-            # if list is empty or none
-            self.service_catalog = []
-
-        self.instance_lock_checked = instance_lock_checked
-
-        # NOTE(markmc): this attribute is currently only used by the
-        # rs_limits turnstile pre-processor.
-        # See https://lists.launchpad.net/openstack/msg12200.html
-        self.quota_class = quota_class
         self.user_name = user_name
         self.project_name = project_name
         self.is_admin = is_admin
-        self.user_auth_plugin = user_auth_plugin
-        if self.is_admin is None:
-            self.is_admin = policy.check_is_admin(self)
         if overwrite or not hasattr(local.store, 'context'):
             self.update_store()
 
@@ -162,12 +140,7 @@ class RequestContext(object):
                 'remote_address': self.remote_address,
                 'timestamp': timeutils.strtime(self.timestamp),
                 'request_id': self.request_id,
-                'auth_token': self.auth_token,
-                'quota_class': self.quota_class,
-                'user_name': self.user_name,
-                'service_catalog': self.service_catalog,
                 'project_name': self.project_name,
-                'instance_lock_checked': self.instance_lock_checked,
                 'tenant': self.tenant,
                 'user': self.user}
 

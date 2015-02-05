@@ -23,14 +23,14 @@ import six
 import webob.dec
 import webob.exc
 
-import nova.api.openstack
-from nova.api.openstack import wsgi
-from nova import exception
-from nova.i18n import _
-from nova.i18n import _LE
-from nova.i18n import _LW
-from nova.openstack.common import log as logging
-import nova.policy
+import dalek.api.openstack
+from dalek.api.openstack import wsgi
+from dalek import exception
+from dalek.i18n import _
+from dalek.i18n import _LE
+from dalek.i18n import _LW
+from dalek.openstack.common import log as logging
+import dalek.policy
 
 LOG = logging.getLogger(__name__)
 

@@ -2,7 +2,7 @@
 # Administrator of the National Aeronautics and Space Administration.
 # All Rights Reserved.
 #
-#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
 #    a copy of the License at
 #
@@ -24,34 +24,33 @@ import stevedore
 import webob.dec
 import webob.exc
 
-from nova.api.openstack import extensions
-from nova.api.openstack import wsgi
-from nova import exception
-from nova.i18n import _
-from nova.i18n import _LC
-from nova.i18n import _LE
-from nova.i18n import _LI
-from nova.i18n import _LW
-from nova.i18n import translate
-from nova import notifications
-from nova.openstack.common import log as logging
-from nova import utils
-from nova import wsgi as base_wsgi
+from dalek.api.openstack import extensions
+from dalek.api.openstack import wsgi
+from dalek import exception
+from dalek.i18n import _
+from dalek.i18n import _LC
+from dalek.i18n import _LE
+from dalek.i18n import _LI
+from dalek.i18n import _LW
+from dalek.i18n import translate
+from dalek.openstack.common import log as logging
+from dalek import utils
+from dalek import wsgi as base_wsgi
 
 
 api_opts = [
-        cfg.BoolOpt('enabled',
-                    default=False,
-                    help='Whether the V3 API is enabled or not'),
-        cfg.ListOpt('extensions_blacklist',
-                    default=[],
-                    help='A list of v3 API extensions to never load. '
-                    'Specify the extension aliases here.'),
-        cfg.ListOpt('extensions_whitelist',
-                    default=[],
-                    help='If the list is not empty then a v3 API extension '
-                    'will only be loaded if it exists in this list. Specify '
-                    'the extension aliases here.')
+    cfg.BoolOpt('enabled',
+                default=False,
+                help='Whether the V3 API is enabled or not'),
+    cfg.ListOpt('extensions_blacklist',
+                default=[],
+                help='A list of v3 API extensions to never load. '
+                     'Specify the extension aliases here.'),
+    cfg.ListOpt('extensions_whitelist',
+                default=[],
+                help='If the list is not empty then a v3 API extension '
+                     'will only be loaded if it exists in this list. Specify '
+                     'the extension aliases here.')
 ]
 api_opts_group = cfg.OptGroup(name='osapi_v3', title='API v3 Options')
 
@@ -87,7 +86,7 @@ class FaultWrapper(base_wsgi.Middleware):
             for clazz in utils.walk_class_hierarchy(webob.exc.HTTPError):
                 FaultWrapper._status_to_type[clazz.code] = clazz
         return FaultWrapper._status_to_type.get(
-                                  status, webob.exc.HTTPInternalServerError)()
+            status, webob.exc.HTTPInternalServerError)()
 
     def _error(self, inner, req):
         LOG.exception(_LE("Caught error: %s"), unicode(inner))
@@ -116,7 +115,6 @@ class FaultWrapper(base_wsgi.Middleware):
             outer.explanation = '%s: %s' % (inner.__class__.__name__,
                                             inner_msg)
 
-        notifications.send_api_fault(req.url, status, inner)
         return wsgi.Fault(outer)
 
     @webob.dec.wsgify(RequestClass=wsgi.Request)
@@ -155,8 +153,8 @@ class ProjectMapper(APIMapper):
             kwargs['path_prefix'] = '{project_id}/%s/:%s_id' % (p_collection,
                                                                 p_member)
         routes.Mapper.resource(self, member_name,
-                                     collection_name,
-                                     **kwargs)
+                               collection_name,
+                               **kwargs)
 
 
 class PlainMapper(APIMapper):
@@ -167,8 +165,8 @@ class PlainMapper(APIMapper):
             p_member = parent_resource['member_name']
             kwargs['path_prefix'] = '%s/:%s_id' % (p_collection, p_member)
         routes.Mapper.resource(self, member_name,
-                                     collection_name,
-                                     **kwargs)
+                               collection_name,
+                               **kwargs)
 
 
 class APIRouter(base_wsgi.Router):
@@ -280,7 +278,7 @@ class APIRouterV21(base_wsgi.Router):
                 # Check whitelist is either empty or if not then the extension
                 # is in the whitelist
                 if (not CONF.osapi_v3.extensions_whitelist or
-                        ext.obj.alias in CONF.osapi_v3.extensions_whitelist):
+                            ext.obj.alias in CONF.osapi_v3.extensions_whitelist):
 
                     # Check the extension is not in the blacklist
                     if ext.obj.alias not in CONF.osapi_v3.extensions_blacklist:
@@ -299,7 +297,7 @@ class APIRouterV21(base_wsgi.Router):
 
         in_blacklist_and_whitelist = set(
             CONF.osapi_v3.extensions_whitelist).intersection(
-                CONF.osapi_v3.extensions_blacklist)
+            CONF.osapi_v3.extensions_blacklist)
         if len(in_blacklist_and_whitelist) != 0:
             LOG.warning(_LW("Extensions in both blacklist and whitelist: %s"),
                         list(in_blacklist_and_whitelist))
@@ -409,7 +407,7 @@ class APIRouterV21(base_wsgi.Router):
                             **kargs)
 
             if resource.custom_routes_fn:
-                    resource.custom_routes_fn(mapper, wsgi_resource)
+                resource.custom_routes_fn(mapper, wsgi_resource)
 
     def _register_controllers(self, ext):
         """Register controllers defined by the extensions

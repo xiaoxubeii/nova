@@ -16,8 +16,8 @@ import threading
 import eventlet
 from eventlet import greenpool
 
-from nova.openstack.common import log as logging
-from nova.openstack.common import loopingcall
+from dalek.openstack.common import log as logging
+from dalek.openstack.common import loopingcall
 
 
 LOG = logging.getLogger(__name__)

@@ -24,15 +24,13 @@ import six.moves.urllib.parse as urlparse
 import webob
 from webob import exc
 
-from nova.compute import task_states
-from nova.compute import utils as compute_utils
-from nova.compute import vm_states
-from nova import exception
-from nova.i18n import _
-from nova.i18n import _LE
-from nova.i18n import _LW
-from nova.openstack.common import log as logging
-from nova import quota
+from dalek.compute import task_states
+from dalek.compute import vm_states
+from dalek import exception
+from dalek.i18n import _
+from dalek.i18n import _LE
+from dalek.i18n import _LW
+from dalek.openstack.common import log as logging
 
 osapi_opts = [
     cfg.IntOpt('osapi_max_limit',
@@ -50,9 +48,6 @@ CONF = cfg.CONF
 CONF.register_opts(osapi_opts)
 
 LOG = logging.getLogger(__name__)
-QUOTAS = quota.QUOTAS
-
-CONF.import_opt('enable', 'nova.cells.opts', group='cells')
 
 # NOTE(cyeoh): A common regexp for acceptable names (user supplied)
 # that we want all new extensions to conform to unless there is a very
@@ -172,7 +167,7 @@ def get_sort_params(input_params, default_key='created_at',
     The input parameters are not modified.
 
     :param input_params: webob.multidict of request parameters (from
-                         nova.wsgi.Request.params)
+                         dalek.wsgi.Request.params)
     :param default_key: default sort key value, added to the list if no
                         'sort_key' parameters are supplied
     :param default_dir: default sort dir value, added to the list if no
@@ -296,11 +291,11 @@ def get_id_from_href(href):
 def remove_version_from_href(href):
     """Removes the first api version from the href.
 
-    Given: 'http://www.nova.com/v1.1/123'
-    Returns: 'http://www.nova.com/123'
+    Given: 'http://www.dalek.com/v1.1/123'
+    Returns: 'http://www.dalek.com/123'
 
-    Given: 'http://www.nova.com/v1.1'
-    Returns: 'http://www.nova.com'
+    Given: 'http://www.dalek.com/v1.1'
+    Returns: 'http://www.dalek.com'
 
     """
     parsed_url = urlparse.urlsplit(href)
@@ -437,7 +432,7 @@ class ViewBuilder(object):
         """Get project id from request url if present or empty string
         otherwise
         """
-        project_id = request.environ["nova.context"].project_id
+        project_id = request.environ["dalek.context"].project_id
         if project_id in request.url:
             return project_id
         return ''

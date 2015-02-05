@@ -45,9 +45,9 @@ from oslo_concurrency import lockutils
 from oslo_concurrency import processutils
 import six
 
-from nova import exception
-from nova.i18n import _, _LE, _LW
-from nova.openstack.common import log as logging
+from dalek import exception
+from dalek.i18n import _, _LE, _LW
+from dalek.openstack.common import log as logging
 
 notify_decorator = 'nova.notifications.notify_decorator'
 
@@ -101,7 +101,6 @@ workarounds_opts = [
 CONF = cfg.CONF
 CONF.register_opts(monkey_patch_opts)
 CONF.register_opts(utils_opts)
-CONF.import_opt('network_api_class', 'nova.network')
 CONF.register_opts(workarounds_opts, group='workarounds')
 
 LOG = logging.getLogger(__name__)

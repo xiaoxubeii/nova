@@ -16,7 +16,7 @@
 import copy
 import os
 
-from nova.api.openstack import common
+from dalek.api.openstack import common
 
 
 def get_view_builder(req):

@@ -37,11 +37,11 @@ import eventlet
 from eventlet import event
 from oslo.config import cfg
 
-from nova.openstack.common import eventlet_backdoor
-from nova.openstack.common._i18n import _LE, _LI, _LW
-from nova.openstack.common import log as logging
-from nova.openstack.common import systemd
-from nova.openstack.common import threadgroup
+from dalek.openstack.common import eventlet_backdoor
+from dalek.openstack.common._i18n import _LE, _LI, _LW
+from dalek.openstack.common import log as logging
+from dalek.openstack.common import systemd
+from dalek.openstack.common import threadgroup
 
 
 CONF = cfg.CONF
