@@ -136,7 +136,6 @@ class RequestContext(object):
                 'project_id': self.project_id,
                 'is_admin': self.is_admin,
                 'read_deleted': self.read_deleted,
-                'roles': self.roles,
                 'remote_address': self.remote_address,
                 'timestamp': timeutils.strtime(self.timestamp),
                 'request_id': self.request_id,
@@ -154,9 +153,6 @@ class RequestContext(object):
         """Return a version of this context with admin flag set."""
         context = copy.deepcopy(self)
         context.is_admin = True
-
-        if 'admin' not in context.roles:
-            context.roles.append('admin')
 
         if read_deleted is not None:
             context.read_deleted = read_deleted

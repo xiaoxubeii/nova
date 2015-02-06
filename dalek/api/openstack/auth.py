@@ -58,7 +58,7 @@ class NoAuthMiddlewareBase(base_wsgi.Middleware):
                                      is_admin=True,
                                      remote_address=remote_address)
 
-        req.environ['nova.context'] = ctx
+        req.environ['context'] = ctx
         return self.application
 
 

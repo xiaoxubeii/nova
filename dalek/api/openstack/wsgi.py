@@ -793,7 +793,7 @@ class Resource(wsgi.Application):
         action_args.update(contents)
 
         project_id = action_args.pop("project_id", None)
-        context = request.environ.get('nova.context')
+        context = request.environ.get('context')
         context.project_id = project_id
 
 

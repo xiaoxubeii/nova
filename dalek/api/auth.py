@@ -44,7 +44,8 @@ class AdaptorContext(wsgi.Middleware):
     def __call__(self, req):
         user_id = req.headers.get('X_USER_ID')
         user_name = req.headers.get('X_USER_NAME')
-        ctx = context.RequestContext(user_id=user_id, user_name=user_name)
+        user_password = CONF.auth_password
+        ctx = context.RequestContext(user_id=user_id, user_name=user_name, user_password=user_password)
 
-        req.environ['nova.context'] = ctx
+        req.environ['context'] = ctx
         return self.application
