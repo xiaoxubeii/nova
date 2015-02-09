@@ -68,9 +68,10 @@ class RequestContext(object):
 
     """
 
-    def __init__(self, user_id, user_name, user_password, project_id=None, is_admin=None, read_deleted="no",
+    def __init__(self, user_name, user_password, project_name, auth_url, user_id=None, project_id=None, is_admin=None,
+                 read_deleted="no",
                  remote_address=None, timestamp=None, request_id=None,
-                 overwrite=True, project_name=None, **kwargs):
+                 overwrite=True, **kwargs):
         """:param read_deleted: 'no' indicates deleted records are hidden,
                 'yes' indicates deleted records are visible,
                 'only' indicates that *only* deleted records are visible.
@@ -90,6 +91,7 @@ class RequestContext(object):
 
         self.user_id = user_id
         self.project_id = project_id
+        self.auth_url = auth_url
         self.read_deleted = read_deleted
         self.remote_address = remote_address
         self.user_password = user_password
